@@ -1,5 +1,9 @@
+from datetime import timezone
+
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+
+from apirest.models import Reviews
 from nukura.models import NukuraStore, UserStoreRelation
 
 
@@ -22,3 +26,16 @@ class UserStoreRelationSerializer(ModelSerializer):
     class Meta:
         model = UserStoreRelation
         fields = ('store', 'like', 'in_storemarks', 'rate')
+
+
+class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reviews
+        fields = ('message', 'nukura')
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        return Reviews.objects.create(
+            email=request.user,
+            sent_at=timezone.now(),
+            **validated_data)

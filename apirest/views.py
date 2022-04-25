@@ -4,17 +4,19 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from drf_yasg.utils import swagger_auto_schema
 
+from apirest.models import Reviews
 from apirest.permissions import IsOwnerOrReadOnly
-from apirest.serializers import NukuraSerializer, UserStoreRelationSerializer
+from apirest.serializers import NukuraSerializer, UserStoreRelationSerializer, CommentsSerializer
 from nukura.models import NukuraStore, UserStoreRelation
 
 
 class NukuraViewSet(ModelViewSet):
+
     queryset = NukuraStore.objects.all().annotate(
             annotated_likes=Count(Case(When(userstorerelation__like=True, then=1))),
-            rating=Avg('userstorerelation__rate')
-        ).select_related('owner').prefetch_related('readers').order_by('id')
+           ).select_related('cat').select_related('owner').prefetch_related('readers').order_by('id')
     serializer_class = NukuraSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     permission_classes = [IsOwnerOrReadOnly]
@@ -38,3 +40,9 @@ class UserRelationView(UpdateModelMixin, GenericViewSet):
                                                         store_id=self.kwargs['book'])
 
         return obj
+
+
+class CommentsView(ModelViewSet):
+    serializer_class = CommentsSerializer
+    queryset = Reviews.objects.all()
+    permission_classes = [IsAuthenticated]

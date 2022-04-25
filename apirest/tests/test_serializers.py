@@ -1,19 +1,24 @@
 import io
 
-from django.contrib.auth.models import User
+
 from django.core.files.images import ImageFile
 from django.db.models import Count, Case, When, Avg
 from django.test import TestCase
 
 from apirest.serializers import NukuraSerializer
 from nukura.models import NukuraStore, UserStoreRelation
+from users.models import CustomUser
 
 
 class NukuraTestSerializer(TestCase):
     def test_ok(self):
-        user1 = User.objects.create(username='user1')
-        user2 = User.objects.create(username='user2')
-        user3 = User.objects.create(username='user3')
+        user1 = CustomUser.objects.create(username='user1',
+                                    email='ivan23.gmail.com', age=18)
+        user2 = CustomUser.objects.create(username='user2',
+                                          email='ivan25.gmail.com', age=19)
+        user3 = CustomUser.objects.create(username='user3',
+                                          email='ivan24.gmail.com', age=20)
+
 
         first_product = NukuraStore.objects.create(title='Mucho gracios',
                                                    image=ImageFile(io.BytesIO(b'some-file'), name='test-image.jpg'),
@@ -23,7 +28,7 @@ class NukuraTestSerializer(TestCase):
 
         store = NukuraStore.objects.all().annotate(
             annotated_likes=Count(Case(When(userstorerelation__like=True, then=1))),
-            rating=Avg('userstorerelation__rate')
+
         ).order_by('id')
         srz=NukuraSerializer(store, many=False).data
         excepted = [{
