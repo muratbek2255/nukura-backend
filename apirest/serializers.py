@@ -5,10 +5,11 @@ from rest_framework.serializers import ModelSerializer
 
 from apirest.models import Reviews
 from nukura.models import NukuraStore, UserStoreRelation
+from users.models import CustomUser, Company
 
 
 class NukuraSerializer(ModelSerializer):
-    # likes_count = serializers.SerializerMethodField()
+
 
     annotated_likes = serializers.IntegerField(read_only=True)
     rating = serializers.DecimalField(max_digits=3, decimal_places=2)
@@ -17,9 +18,6 @@ class NukuraSerializer(ModelSerializer):
     class Meta:
         model = NukuraStore
         fields = ('id', 'title', 'price', 'author_name',  'annotated_likes', 'rating', 'owner_name')
-
-    # def get_likes_count(self, instance):
-    #     return UserStoreRelation.objects.filter(store=instance, like=True).count()
 
 
 class UserStoreRelationSerializer(ModelSerializer):
@@ -39,3 +37,15 @@ class CommentsSerializer(serializers.ModelSerializer):
             email=request.user,
             sent_at=timezone.now(),
             **validated_data)
+
+
+class CustomUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+
+
+class CompanySerializer(ModelSerializer):
+    class Meta:
+        model = Company
+        fields = '__all__'

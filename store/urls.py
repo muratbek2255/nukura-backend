@@ -22,8 +22,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from apirest.views import NukuraViewSet, UserStoreRelation
-
+from apirest.views import NukuraViewSet, UserStoreRelation, CustomUserViewSet, CompanyViewSet
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -40,16 +39,21 @@ schema_view = get_schema_view(
 
 routers = SimpleRouter()
 routers.register(r'api/v1/nukura', NukuraViewSet, basename='nukura-url')
+routers.register(r'api/v1/users', CustomUserViewSet, basename='user-url')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path('', include('social_django.urls', namespace='social')),
+    path('api-auth/', include('rest_framework.urls')),
+    # path(r'^auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
+    # re_path('', include('social_django.urls', namespace='social')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0),
                           name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('api/register/', UserStoreRelation, name='register')
+    path('api/register/', UserStoreRelation, name='register'),
+    path('api/v1/companies', CompanyViewSet.as_view(), name='company-url')
 ]+static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
 
 
