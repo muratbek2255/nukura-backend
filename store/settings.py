@@ -28,10 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['2a46-212-42-120-155.in.ngrok.io']
-
+DEBUG = False
 
 # Application definition
 
@@ -103,27 +100,6 @@ WSGI_APPLICATION = 'store.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'nukuraenactus3',
-        'USER': 'postgres',
-        'PASSWORD': 'neymarjunior23',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-
-}
-
-# AUTHENTICATION_BACKENDS = (
-#
-#     'social_core.backends.github.GithubOAuth2',
-#     'django.contrib.auth.backends.ModelBackend',
-# )
-
-# Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -217,8 +193,3 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-
-# SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-#
-# SOCIAL_AUTH_GITHUB_KEY = os.getenv('SOCIAL_AUTH_GITHUB_KEY')
-# SOCIAL_AUTH_GITHUB_SECRET = os.getenv('SOCIAL_AUTH_GITHUB_SECRET')
